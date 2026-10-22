@@ -1,5 +1,5 @@
 /* 포천 버스 시간표 service worker */
-var CACHE = "pocheon-bus-v3";
+var CACHE = "pocheon-bus-v4";
 var FILES = ["./", "index.html", "manifest.json", "siwoe.jpg", "bus3006.jpg",
   "icon-192.png", "icon-512.png", "icon-maskable-192.png", "icon-maskable-512.png", "apple-touch-icon.png"];
 
