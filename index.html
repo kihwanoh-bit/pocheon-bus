@@ -14,6 +14,16 @@
 <meta property="og:title" content="포천 버스 시간표">
 <meta property="og:description" content="가실 방향을 누르면 다음 버스와 남은 시간이 바로 나와요.">
 <meta property="og:image" content="icon-512.png">
+<script>
+/* 카카오톡 안에서 열리면 바깥 인터넷 창으로 자동으로 넘기기 (한 번만) */
+(function(){
+  var ua=navigator.userAgent||"";
+  if(!/KAKAOTALK/i.test(ua)) return;
+  document.documentElement.className+=" inkakao";
+  try{ if(sessionStorage.getItem("pb_ext")) return; sessionStorage.setItem("pb_ext","1"); }catch(_){ return; }
+  location.href="kakaotalk://web/openExternal?url="+encodeURIComponent(location.href);
+})();
+</script>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -105,6 +115,27 @@ dd{margin:0;font-size:17px}
 .note{font-size:15px;color:var(--sub);margin:10px 0 0}
 .caveat{border-left:4px solid var(--gold);padding:10px 12px;border-radius:8px;background:var(--gold-soft);font-size:15px;margin-top:6px}
 footer{text-align:center;color:var(--sub);font-size:13px;margin-top:6px}
+.install{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;appearance:none;border:0;cursor:pointer;font-family:inherit;
+  margin:0 0 16px;padding:14px 16px;min-height:62px;border-radius:18px;font-size:21px;font-weight:800;letter-spacing:-.3px;color:#1e2a5a;
+  background:linear-gradient(135deg,#f8d667 0%,#f0bd3a 55%,#e2a823 100%);box-shadow:0 6px 18px rgba(201,151,28,.35),inset 0 0 0 2px rgba(255,255,255,.35);transition:transform .08s}
+.install:active{transform:scale(.98)}
+.install small{display:block;font-size:13px;font-weight:700;opacity:.8;letter-spacing:0}
+.install .tx{text-align:left;line-height:1.25}
+.kakao{border:2px solid var(--blue);background:linear-gradient(var(--blue-soft),var(--blue-soft)),var(--card);border-radius:20px;padding:16px;margin-bottom:16px;box-shadow:var(--shadow);text-align:center}
+.kakao p{margin:0 0 12px;font-size:18px;font-weight:700}
+.kakao .go{display:block;width:100%;appearance:none;border:0;cursor:pointer;font-family:inherit;padding:16px;border-radius:16px;font-size:21px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,#1e3a8a,#2457d6);box-shadow:0 6px 18px rgba(36,87,214,.3);text-decoration:none}
+.kakao .alt{display:inline-block;margin-top:12px;font-size:16px;font-weight:700;color:var(--blue-ink)}
+.sheet{position:fixed;inset:0;z-index:50;background:rgba(10,14,25,.55);display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.sheet .in{width:100%;max-width:560px;max-height:88vh;overflow:auto;background:var(--card);color:var(--ink);border-radius:22px;border:2px solid var(--gold);padding:20px 18px calc(18px + env(safe-area-inset-bottom));box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.sheet h3{margin:0 0 4px;font-size:23px;font-weight:800;color:var(--gold-ink)}
+.sheet .lead{margin:0 0 14px;font-size:17px;color:var(--sub)}
+.how{border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.how.me{border:2px solid var(--blue);background:var(--blue-soft)}
+.how b{display:block;font-size:20px;margin-bottom:6px}
+.how .tag{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:999px;background:var(--blue);color:#fff;font-size:13px;vertical-align:middle}
+.how ol{margin:0;padding-left:24px;font-size:19px;line-height:1.6}
+.sheet .close{display:block;width:100%;appearance:none;border:0;cursor:pointer;font-family:inherit;margin-top:6px;padding:15px;border-radius:16px;font-size:20px;font-weight:800;color:#fff;background:linear-gradient(135deg,#1e3a8a,#2457d6)}
 </style>
 </head>
 <body>
@@ -114,6 +145,26 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:6px}
     <p>가실 방향을 누르면 지금 시각 기준으로 다음 버스와 남은 시간이 바로 나와요.</p>
     <span class="now" id="nowChip">--</span>
   </header>
+
+  <section class="kakao" id="kakaoBox" hidden>
+    <p>카카오톡 안에서는 '홈 화면에 추가'가 안 돼요.<br>아래 버튼을 눌러 인터넷 창으로 여세요.</p>
+    <button class="go" id="extBtn" type="button">🌐 인터넷 창으로 열기</button>
+    <a class="alt" id="chromeLink" href="#" hidden>크롬으로 열기 ›</a>
+  </section>
+
+  <button class="install" id="installBtn" type="button" hidden>
+    <span style="font-size:28px">📲</span>
+    <span class="tx">홈 화면에 추가<small>다음부터 아이콘 한 번만 누르면 바로 열려요</small></span>
+  </button>
+
+  <div class="sheet" id="guide" hidden role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+    <div class="in">
+      <h3 id="guideTitle">📲 홈 화면에 추가하는 법</h3>
+      <p class="lead">한 번만 해 두시면 바탕화면 아이콘으로 바로 열려요.</p>
+      <div id="howList"></div>
+      <button class="close" id="guideClose" type="button">알겠어요</button>
+    </div>
+  </div>
 
   <section class="box gold">
     <div class="bar"></div>
@@ -293,6 +344,68 @@ $("srcs").innerHTML=SOURCES.map(function(s){ return '<a href="'+s[3]+'" target="
 render();
 setInterval(render, 20000);
 document.addEventListener("visibilitychange",function(){ if(!document.hidden) render(); });
+
+/*PWA-START*/
+var PB = {
+  isKakao: function(ua){ return /KAKAOTALK/i.test(ua||""); },
+  isAndroid: function(ua){ return /Android/i.test(ua||""); },
+  isIOS: function(ua){ return /iPhone|iPad|iPod/i.test(ua||""); },
+  isSamsung: function(ua){ return /SamsungBrowser/i.test(ua||""); },
+  extUrl: function(href){ return "kakaotalk://web/openExternal?url=" + encodeURIComponent(href); },
+  intentUrl: function(href){
+    var m = /^(https?):\/\/(.*)$/.exec(href); if(!m) return href;
+    return "intent://" + m[2] + "#Intent;scheme=" + m[1] + ";package=com.android.chrome;S.browser_fallback_url=" + encodeURIComponent(href) + ";end";
+  },
+  browser: function(ua){ return PB.isIOS(ua) ? "ios" : PB.isSamsung(ua) ? "samsung" : "chrome"; },
+  guide: function(ua){
+    var me = PB.browser(ua);
+    var items = [
+      ["samsung","삼성 인터넷",["화면 아래쪽 <b style=\"display:inline;font-size:inherit\">☰</b> 메뉴를 누르세요","'현재 페이지 추가'를 누르세요","'홈 화면'을 누르세요"]],
+      ["chrome","크롬",["오른쪽 위 점 세 개 <b style=\"display:inline;font-size:inherit\">⋮</b> 를 누르세요","'홈 화면에 추가' 또는 '앱 설치'를 누르세요","'추가' 또는 '설치'를 누르세요"]],
+      ["ios","아이폰 사파리",["아래쪽 공유 버튼 <b style=\"display:inline;font-size:inherit\">⬆︎</b> 을 누르세요","'홈 화면에 추가'를 누르세요","오른쪽 위 '추가'를 누르세요"]]
+    ];
+    items.sort(function(a,b){ return (b[0]===me) - (a[0]===me); });
+    return items.map(function(it){
+      return '<div class="how'+(it[0]===me?' me':'')+'"><b>'+it[1]+(it[0]===me?'<span class="tag">지금 쓰시는 창</span>':'')+'</b><ol>'+
+        it[2].map(function(x){ return '<li>'+x+'</li>'; }).join("")+'</ol></div>';
+    }).join("");
+  }
+};
+if (typeof module !== "undefined") module.exports = PB;
+
+(function(){
+  if (typeof document === "undefined") return;
+  var ua = navigator.userAgent || "";
+  var standalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
+  var deferred = null;
+  var btn = $("installBtn");
+
+  if (PB.isKakao(ua)) {
+    $("kakaoBox").hidden = false;
+    $("extBtn").addEventListener("click", function(){ location.href = PB.extUrl(location.href); });
+    if (PB.isAndroid(ua)) { var a = $("chromeLink"); a.href = PB.intentUrl(location.href); a.hidden = false; }
+  } else if (!standalone) {
+    btn.hidden = false;
+  }
+
+  window.addEventListener("beforeinstallprompt", function(e){ e.preventDefault(); deferred = e; });
+  window.addEventListener("appinstalled", function(){ deferred = null; btn.hidden = true; $("guide").hidden = true; });
+
+  function openGuide(){ $("howList").innerHTML = PB.guide(ua); $("guide").hidden = false; }
+  btn.addEventListener("click", function(){
+    if (deferred) {
+      var ev = deferred; deferred = null;
+      ev.prompt();
+      if (ev.userChoice) ev.userChoice.then(function(r){ if (r && r.outcome === "accepted") btn.hidden = true; });
+    } else openGuide();
+  });
+  $("guideClose").addEventListener("click", function(){ $("guide").hidden = true; });
+  $("guide").addEventListener("click", function(e){ if (e.target === this) this.hidden = true; });
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
+  }
+})();
 </script>
 </body>
 </html>
