@@ -17,6 +17,6 @@ for(const k in U){a.strictEqual(PB.browser(U[k]),exp[k],k);
  if(exp[k]){a.ok(g.indexOf('<div class="how me"')===0,k+" first");a.strictEqual(g.split("지금 쓰시는 창").length,2,k);}
  else a.ok(!g.includes("지금 쓰시는 창"),k+" no tag");}
 a.ok(PB.guide(U.whale).startsWith('<div class="how me"><b>네이버 웨일'));
-a.ok(PB.guide(U.whale).includes("오른쪽 아래"));
+a.ok(PB.guide(U.whale).includes("주소창 왼쪽"));
 a.strictEqual(PB.guide("").split('class="how').length-1,4);
 console.log("ok",Object.keys(U).length);
