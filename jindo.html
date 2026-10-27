@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>진도 고속버스 시간표</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#b91c1c">
+<meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="진도버스">
+<link rel="manifest" href="jindo.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{
+  --bg:#f6f4ef; --card:#ffffff; --ink:#1b1f2a; --sub:#5b6272; --line:#e6e2d8;
+  --gold:#c9971c; --gold-soft:rgba(201,151,28,.10); --gold-ink:#8a6410;
+  --blue:#2457d6; --blue-soft:rgba(36,87,214,.08); --blue-ink:#1d47b3;
+  --chip:#ffffff; --chip-on:#1e3a8a; --chip-on-ink:#fff;
+  --shadow:0 6px 24px rgba(20,30,60,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f1219; --card:#171b25; --ink:#eef1f7; --sub:#a3abbd; --line:#2a3040;
+    --gold:#e2b54a; --gold-soft:rgba(226,181,74,.10); --gold-ink:#f0cd78;
+    --blue:#5b8cff; --blue-soft:rgba(91,140,255,.10); --blue-ink:#9db9ff;
+    --chip:#1f2431; --chip-on:#e2b54a; --chip-on-ink:#1b1606;
+    --shadow:0 6px 24px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR","Noto Sans CJK KR",sans-serif;
+  font-size:18px;line-height:1.55;word-break:keep-all;}
+.wrap{max-width:560px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 14px calc(28px + env(safe-area-inset-bottom));}
+header.hero{position:relative;border-radius:22px;padding:22px 20px 20px;margin-bottom:16px;color:#fff;overflow:hidden;
+  background:linear-gradient(135deg,#1e3a8a 0%,#2457d6 60%,#3b6ff0 100%);box-shadow:var(--shadow);}
+header.hero:after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,#f5c542,#e2a823,#f5c542);}
+.hero h1{margin:0 0 6px;font-size:28px;letter-spacing:-.5px;font-weight:800}
+.hero h1 .em{color:#f5c542}
+.hero p{margin:0;font-size:16px;opacity:.92}
+.hero .now{display:inline-block;margin-top:12px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.16);font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+.box{border-radius:20px;padding:18px 16px;margin-bottom:16px;box-shadow:var(--shadow);background:var(--card)}
+.box.gold{border:2px solid var(--gold);background:linear-gradient(var(--gold-soft),var(--gold-soft)),var(--card)}
+.box.blue{border:2px solid var(--blue);background:linear-gradient(var(--blue-soft),var(--blue-soft)),var(--card)}
+.bar{width:44px;height:5px;border-radius:3px;margin-bottom:10px}
+.gold .bar{background:var(--gold)} .blue .bar{background:var(--blue)}
+h2{margin:0 0 12px;font-size:22px;font-weight:800;letter-spacing:-.3px}
+.gold h2{color:var(--gold-ink)} .blue h2{color:var(--blue-ink)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{appearance:none;border:1.5px solid var(--line);background:var(--chip);color:var(--ink);border-radius:14px;
+  padding:14px 8px;font-size:18px;font-weight:700;font-family:inherit;cursor:pointer;min-height:56px;transition:transform .08s,background .15s}
+.btn:active{transform:scale(.97)}
+.btn small{display:block;font-size:13px;font-weight:600;color:var(--sub);margin-top:2px}
+.btn.on{background:var(--chip-on);color:var(--chip-on-ink);border-color:var(--chip-on)}
+.btn.on small{color:inherit;opacity:.85}
+.days{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.days .btn{min-height:48px;font-size:17px;padding:10px 6px}
+.hint{margin:12px 0 0;color:var(--sub);font-size:16px}
+.nowline{color:var(--sub);font-size:16px;margin:-4px 0 12px;font-variant-numeric:tabular-nums}
+.next{display:flex;flex-direction:column;gap:10px}
+.nb{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 16px}
+.nb .t{font-size:34px;font-weight:800;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1.1}
+.nb .l{font-size:19px;font-weight:800;color:var(--blue-ink);text-align:right;white-space:nowrap}
+.nb .n{font-size:13px;color:var(--sub);margin-top:3px}
+.nb.first{border:2px solid var(--blue)}
+.nb.first .t{font-size:44px}
+.nb.first .l{font-size:22px}
+.done{border-radius:16px;padding:16px;background:var(--card);border:1px dashed var(--blue)}
+.done b{display:block;font-size:22px;margin-bottom:4px}
+.where{margin:14px 0 12px;font-size:17px;font-weight:600}
+.where:before{content:"📍 "}
+figure{margin:0}
+figure img{display:block;width:100%;height:220px;object-fit:cover;border-radius:14px;background:var(--line)}
+figcaption{font-size:14px;color:var(--sub);margin-top:6px;text-align:center}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:16px;box-shadow:var(--shadow)}
+.card h2{font-size:20px}
+table{width:100%;border-collapse:collapse;font-size:17px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:14px;color:var(--sub);font-weight:700}
+td.h{font-weight:800;width:62px;white-space:nowrap}
+td.ms{word-spacing:6px}
+tr.past td{opacity:.45}
+details>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:20px;font-weight:800}
+details>summary::-webkit-details-marker{display:none}
+details>summary:after{content:"펼치기 ▾";font-size:15px;font-weight:700;color:var(--blue-ink)}
+details[open]>summary:after{content:"접기 ▴"}
+details[open]>summary{margin-bottom:10px}
+dl{margin:0}
+dl div{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+dl div:last-child{border-bottom:0}
+dt{flex:0 0 96px;color:var(--sub);font-size:15px;font-weight:700;padding-top:1px}
+dd{margin:0;font-size:17px}
+.src a{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.src a b{display:block;font-size:16px;color:var(--blue-ink)}
+.src a span{font-size:13px;color:var(--sub)}
+.note{font-size:15px;color:var(--sub);margin:10px 0 0}
+.caveat{border-left:4px solid var(--gold);padding:10px 12px;border-radius:8px;background:var(--gold-soft);font-size:15px;margin-top:6px}
+footer{text-align:center;color:var(--sub);font-size:13px;margin-top:6px}
+.install{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;appearance:none;border:0;cursor:pointer;font-family:inherit;
+  margin:0 0 16px;padding:14px 16px;min-height:62px;border-radius:18px;font-size:21px;font-weight:800;letter-spacing:-.3px;color:#1e2a5a;
+  background:linear-gradient(135deg,#f8d667 0%,#f0bd3a 55%,#e2a823 100%);box-shadow:0 6px 18px rgba(201,151,28,.35),inset 0 0 0 2px rgba(255,255,255,.35);transition:transform .08s}
+.install:active{transform:scale(.98)}
+.install small{display:block;font-size:13px;font-weight:700;opacity:.8;letter-spacing:0}
+.install .tx{text-align:left;line-height:1.25}
+.kakao{border:2px solid var(--blue);background:linear-gradient(var(--blue-soft),var(--blue-soft)),var(--card);border-radius:20px;padding:16px;margin-bottom:16px;box-shadow:var(--shadow);text-align:center}
+.kakao p{margin:0 0 12px;font-size:18px;font-weight:700}
+.kakao .go{display:block;width:100%;appearance:none;border:0;cursor:pointer;font-family:inherit;padding:16px;border-radius:16px;font-size:21px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,#1e3a8a,#2457d6);box-shadow:0 6px 18px rgba(36,87,214,.3);text-decoration:none}
+.kakao .alt{display:inline-block;margin-top:12px;font-size:16px;font-weight:700;color:var(--blue-ink)}
+.sheet{position:fixed;inset:0;z-index:50;background:rgba(10,14,25,.55);display:flex;align-items:flex-end;justify-content:center;padding:12px}
+.sheet .in{width:100%;max-width:560px;max-height:88vh;overflow:auto;background:var(--card);color:var(--ink);border-radius:22px;border:2px solid var(--gold);padding:20px 18px calc(18px + env(safe-area-inset-bottom));box-shadow:0 12px 40px rgba(0,0,0,.3)}
+.sheet h3{margin:0 0 4px;font-size:23px;font-weight:800;color:var(--gold-ink)}
+.sheet .lead{margin:0 0 14px;font-size:17px;color:var(--sub)}
+.how{border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.how.me{border:2px solid var(--blue);background:var(--blue-soft)}
+.how b{display:block;font-size:20px;margin-bottom:6px}
+.how .tag{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:999px;background:var(--blue);color:#fff;font-size:13px;vertical-align:middle}
+.how ol{margin:0;padding-left:24px;font-size:19px;line-height:1.6}
+.sheet .close{display:block;width:100%;appearance:none;border:0;cursor:pointer;font-family:inherit;margin-top:6px;padding:15px;border-radius:16px;font-size:20px;font-weight:800;color:#fff;background:linear-gradient(135deg,#1e3a8a,#2457d6)}
+</style>
+<style>
+header.hero{background:linear-gradient(135deg,#991b1b 0%,#dc2626 60%,#ef4444 100%)}
+.grid .btn{min-height:68px;font-size:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+  <h1>진도 <span class="em">고속버스</span></h1>
+  <p>진도공용터미널 ↔ 서울 센트럴시티(호남선), 금호고속</p>
+  <span class="now" id="nowChip"></span>
+</header>
+
+<section class="box blue">
+  <div class="bar"></div>
+  <h2>어디로 가세요?</h2>
+  <div class="grid" id="dirs">
+    <button class="btn" data-dir="j2s">진도 → 서울<small>강남 센트럴시티</small></button>
+    <button class="btn" data-dir="s2j">서울 → 진도<small>진도공용터미널</small></button>
+  </div>
+</section>
+
+<section class="box blue">
+  <div class="bar"></div>
+  <h2 id="nextTitle"></h2>
+  <p class="nowline" id="nowLine"></p>
+  <div id="next"></div>
+  <p class="where" id="where"></p>
+  <figure>
+    <img id="photo" src="jindo-bus.jpg" alt="금호고속 우등 고속버스 (기아 그랜버드)">
+    <figcaption>금호고속 우등 고속버스</figcaption>
+  </figure>
+</section>
+
+<section class="card">
+  <h2 id="allTitle"></h2>
+  <table><thead><tr><th>출발</th><th>도착(예정)</th><th>등급</th></tr></thead><tbody id="allBody"></tbody></table>
+  <p class="note" id="dur"></p>
+</section>
+
+<section class="card">
+  <h2>알아 두세요</h2>
+  <dl>
+    <div><dt>서울 타는 곳</dt><dd>센트럴시티터미널 호남선 (3·7·9호선 고속터미널역)</dd></div>
+    <div><dt>진도 타는 곳</dt><dd>진도공용터미널 (진도읍 남문길 5)</dd></div>
+    <div><dt>진도터미널 전화</dt><dd><a href="tel:061-544-2121">061-544-2121</a></dd></div>
+  </dl>
+  <p class="caveat">2026년 10월 기준 시간표예요. 명절·공휴일과 요금은 예매할 때 꼭 확인하세요.</p>
+  <p class="note">출처: 진도→서울 진도군청 시외버스 시간표(jindo.go.kr, 2026-10-23 확인), 서울→진도 공공데이터 시간표(아사마루, 2026-10-02 수정, vocados·koreacharts와 같음).</p>
+</section>
+<footer>로돌이 만든 진도 버스 시간표</footer>
+</div>
+<script>
+var DATA={
+ j2s:[["08:20","13:20","프리미엄"],["10:10","15:10","우등"],["13:30","18:30","프리미엄"],["15:30","20:30","우등"]],
+ s2j:[["06:00","10:40","프리미엄"],["08:10","12:50","우등"],["16:00","20:40","프리미엄"],["17:10","21:50","우등"]]
+};
+var NAMES={j2s:"진도 → 서울(강남)",s2j:"서울(강남) → 진도"};
+var WHERE={j2s:"진도공용터미널에서 타요",s2j:"센트럴시티터미널 호남선에서 타요"};
+var DUR={j2s:"걸리는 시간 약 5시간 (도착은 예정 시각이에요)",s2j:"걸리는 시간 약 4시간 40분 (도착은 예정 시각이에요)"};
+var $=function(id){return document.getElementById(id);};
+function kst(){var d=new Date(Date.now()+9*3600e3);var h=d.getUTCHours(),m=d.getUTCMinutes();return {min:h*60+m,label:(h<10?"0":"")+h+":"+(m<10?"0":"")+m};}
+function toMin(t){return +t.slice(0,2)*60+ +t.slice(3);}
+function left(x){var h=Math.floor(x/60),m=x%60;return x<1?"곧 출발":(h?h+"시간 ":"")+(m?m+"분":"")+" 뒤";}
+var dir="j2s";try{var s=localStorage.getItem("jb_dir");if(DATA[s])dir=s;}catch(e){}
+function render(){
+ var n=kst(),b=DATA[dir];
+ $("nowChip").textContent="지금 "+n.label;
+ document.querySelectorAll("#dirs .btn").forEach(function(x){x.classList.toggle("on",x.dataset.dir===dir);x.setAttribute("aria-pressed",x.dataset.dir===dir);});
+ $("nextTitle").textContent="다음 버스 · "+NAMES[dir];
+ $("nowLine").textContent="지금 "+n.label+" 기준";
+ var up=b.filter(function(x){return toMin(x[0])>=n.min;}).slice(0,3);
+ $("next").innerHTML=up.length?'<div class="next">'+up.map(function(x,i){return '<div class="nb'+(i?'':' first')+'"><div><div class="t">'+x[0]+'</div><div class="n">'+x[2]+' · 도착 '+x[1]+'</div></div><div class="l">'+left(toMin(x[0])-n.min)+'</div></div>';}).join("")+'</div>'
+  :'<div class="done"><b>오늘 버스는 끝났어요.</b>내일 첫차는 '+b[0][0]+' ('+b[0][2]+')예요.</div>';
+ $("where").textContent=WHERE[dir];
+ $("allTitle").textContent="하루 전체 시간표 ("+b.length+"회)";
+ $("allBody").innerHTML=b.map(function(x){return '<tr'+(toMin(x[0])<n.min?' class="past"':'')+'><td class="h">'+x[0]+'</td><td>'+x[1]+'</td><td>'+x[2]+'</td></tr>';}).join("");
+ $("dur").textContent=DUR[dir];
+}
+$("dirs").addEventListener("click",function(e){var x=e.target.closest("[data-dir]");if(!x)return;dir=x.dataset.dir;try{localStorage.setItem("jb_dir",dir);}catch(_){}render();});
+render();setInterval(render,20000);
+document.addEventListener("visibilitychange",function(){if(!document.hidden)render();});
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
+</script>
+</body>
+</html>

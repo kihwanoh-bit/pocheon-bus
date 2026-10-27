@@ -18,6 +18,12 @@ self.addEventListener("fetch", function (e) {
   if (req.method !== "GET") return;
   var url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+  if (/\/jindo\.html$/.test(url.pathname)) {
+    e.respondWith(fetch(req).then(function (res) {
+      var copy = res.clone(); caches.open(CACHE).then(function (c) { c.put("jindo.html", copy); }); return res;
+    }).catch(function () { return caches.match("jindo.html"); }));
+    return;
+  }
   var isPage = req.mode === "navigate" || /\/(index\.html)?$/.test(url.pathname);
   if (isPage) {
     // network-first so timetable updates show right away
