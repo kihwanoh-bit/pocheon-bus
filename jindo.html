@@ -173,7 +173,7 @@ td small{display:block;font-size:14px;color:var(--sub)}
   <p class="where" id="where"></p>
   <figure id="fig">
     <img id="photo" src="jindo-bus.jpg" alt="금호고속 우등 고속버스 (기아 그랜버드)">
-    <figcaption>금호고속 우등 고속버스</figcaption>
+    <figcaption id="figcap">금호고속 우등 고속버스</figcaption>
   </figure>
 </section>
 
@@ -243,7 +243,7 @@ function render(){
  $("next").innerHTML=up.length?'<div class="next">'+up.map(function(x,i){return '<div class="nb'+(i?'':' first')+'"><div><div class="t">'+x[0]+'</div><div class="n">'+sub(x)+'</div></div><div class="l">'+left(toMin(x[0])-n.min)+'</div></div>';}).join("")+'</div>'
   :'<div class="done"><b>오늘 버스는 끝났어요.</b>'+(lo?'내일 첫차: '+b[0][0]:'내일 첫차는 '+b[0][0]+' ('+b[0][2]+')예요.')+'</div>';
  $("where").textContent=WHERE[dir];
- $("fig").hidden=lo;
+ $("photo").src=lo?"jindo-gunnae-bus.jpg":"jindo-bus.jpg";$("photo").alt=lo?"진도 농어촌버스 (옥주여객, 쉬미·소포·갈두)":"금호고속 우등 고속버스 (기아 그랜버드)";$("photo").style.objectPosition=lo?"60% 55%":"";$("figcap").textContent=lo?"진도 농어촌버스 (옥주여객) · 초록 버스":"금호고속 우등 고속버스";
  $("localInfo").hidden=!lo;$("exInfo").hidden=lo;
  $("allTitle").textContent="하루 전체 시간표 ("+b.length+"회)";
  $("allHead").innerHTML=dir==="m2e"?'<tr><th>산월 승차</th><th>터미널 출발</th></tr>':dir==="e2m"?'<tr><th>터미널 출발</th><th>경유</th></tr>':'<tr><th>출발</th><th>도착(예정)</th><th>등급</th></tr>';
