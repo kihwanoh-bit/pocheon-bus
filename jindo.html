@@ -138,13 +138,23 @@ td small{display:block;font-size:14px;color:var(--sub)}
 .localinfo{border:2px solid #15803d;background:linear-gradient(rgba(21,128,61,.07),rgba(21,128,61,.07)),var(--card)}
 .localinfo h2{color:#15803d}
 @media (prefers-color-scheme: dark){.localinfo h2{color:#4ade80}}
+.ferry{border:2px solid #0e7490;background:linear-gradient(rgba(14,116,144,.07),rgba(14,116,144,.07)),var(--card)}
+.ferry h2{color:#0e7490}
+.ferry h3{margin:14px 0 6px;font-size:19px;font-weight:800}
+.ferry td.h{font-size:19px}
+.ferry ul{margin:10px 0 0;padding-left:20px;font-size:16px}
+.ferry li{margin-bottom:6px}
+.grp i.fe{background:#0e7490}
+a.btn.fe{display:block;text-align:center;text-decoration:none;background:#0e7490;border-color:#0e7490;color:#fff}
+a.btn.fe small{color:#fff;opacity:.85}
+@media (prefers-color-scheme: dark){.ferry h2{color:#67e8f9}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="hero">
   <h1>진도 <span class="em">버스</span></h1>
-  <p>고속버스 진도 ↔ 서울 · 군내버스 읍 터미널 ↔ 산월</p>
+  <p>고속버스 진도 ↔ 서울 · 군내버스 읍 터미널 ↔ 산월 · 배편 쉬미 ↔ 가사도</p>
   <span class="now" id="nowChip"></span>
 </header>
 
@@ -161,6 +171,9 @@ td small{display:block;font-size:14px;color:var(--sub)}
     <div class="grid">
       <button class="btn lo" data-dir="e2m">읍 터미널 → 산월<small>쉬미/소포 노선</small></button>
       <button class="btn lo" data-dir="m2e">산월 → 읍 터미널<small>십일시/소포 노선</small></button>
+    </div>
+    <div class="grp"><i class="fe">배편</i>쉬미항 ↔ 가사도 (가사페리호)</div>
+    <a class="btn fe" href="#ferry">⛴ 배 시간표 보기<small>하루 3번 왕복</small></a>
     </div>
   </div>
 </section>
@@ -203,6 +216,27 @@ td small{display:block;font-size:14px;color:var(--sub)}
   </dl>
   <p class="caveat">2026년 10월 기준 시간표예요. 명절·공휴일과 요금은 예매할 때 꼭 확인하세요.</p>
   <p class="note">출처: 진도→서울 진도군청 시외버스 시간표(jindo.go.kr, 2026-10-23 확인), 서울→진도 공공데이터 시간표(아사마루, 2026-10-02 수정, vocados·koreacharts와 같음).</p>
+</section>
+<section class="card ferry" id="ferry">
+  <h2>⛴ 쉬미항 ↔ 가사도 배편 (가사페리호)</h2>
+  <h3>쉬미항 → 가사도</h3>
+  <table><thead><tr><th>항차</th><th>쉬미 출발</th><th>가사도 도착</th></tr></thead><tbody>
+    <tr><td>1항차</td><td class="h">07:00</td><td>07:55</td></tr>
+    <tr><td>2항차</td><td class="h">11:30</td><td>12:25</td></tr>
+    <tr><td>3항차</td><td class="h">16:00</td><td>16:55</td></tr>
+  </tbody></table>
+  <h3>가사도 → 쉬미항</h3>
+  <table><thead><tr><th>항차</th><th>가사도 출발</th><th>쉬미 도착</th></tr></thead><tbody>
+    <tr><td>1항차</td><td class="h">08:10</td><td>09:05</td></tr>
+    <tr><td>2항차</td><td class="h">13:00</td><td>13:55</td></tr>
+    <tr><td>3항차</td><td class="h">17:10</td><td>19:10<small>(게시판 표기 그대로)</small></td></tr>
+  </tbody></table>
+  <p class="caveat">동절기에는 3항차 시간이 앞당겨집니다 (터미널 게시판에 손글씨로 변경 표시). 출발 전 꼭 확인하세요.</p>
+  <ul>
+    <li>운항시간은 조석차 및 기상여건에 따라 변경될 수 있으니 출발 전 해운회사에 연락하여 주시기 바랍니다.</li>
+    <li>승선권 발권/승선 시 신분증을 제출하며, 출항 5분 전 승선권 발매 종료됩니다.</li>
+  </ul>
+  <p class="note">출처: 쉬미항여객선터미널 게시 시간표 (2026-10-31 촬영)</p>
 </section>
 <footer>로돌이 만든 진도 버스 시간표 · 시각은 한국 시간 기준이에요</footer>
 </div>
