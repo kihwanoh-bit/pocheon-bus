@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>진도 고속버스 시간표</title>
+<title>진도 버스 시간표</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#b91c1c">
 <meta name="color-scheme" content="light dark">
@@ -126,22 +126,42 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:6px}
 <style>
 header.hero{background:linear-gradient(135deg,#991b1b 0%,#dc2626 60%,#ef4444 100%)}
 .grid .btn{min-height:68px;font-size:20px}
+.grp{font-size:16px;font-weight:800;color:var(--sub);margin:14px 2px 8px;display:flex;align-items:center;gap:8px}
+.grp:first-of-type{margin-top:0}
+.grp i{font-style:normal;display:inline-block;padding:2px 10px;border-radius:999px;font-size:14px;color:#fff}
+.grp i.ex{background:#b91c1c} .grp i.lo{background:#15803d}
+.btn.lo.on{background:#15803d;border-color:#15803d;color:#fff}
+.free{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;background:#15803d;color:#fff;font-size:14px;font-weight:800;vertical-align:middle}
+.nb .n{font-size:15px}
+th{white-space:nowrap}
+td small{display:block;font-size:14px;color:var(--sub)}
+.localinfo{border:2px solid #15803d;background:linear-gradient(rgba(21,128,61,.07),rgba(21,128,61,.07)),var(--card)}
+.localinfo h2{color:#15803d}
+@media (prefers-color-scheme: dark){.localinfo h2{color:#4ade80}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header class="hero">
-  <h1>진도 <span class="em">고속버스</span></h1>
-  <p>진도공용터미널 ↔ 서울 센트럴시티(호남선), 금호고속</p>
+  <h1>진도 <span class="em">버스</span></h1>
+  <p>고속버스 진도 ↔ 서울 · 군내버스 읍 터미널 ↔ 산월</p>
   <span class="now" id="nowChip"></span>
 </header>
 
 <section class="box blue">
   <div class="bar"></div>
   <h2>어디로 가세요?</h2>
-  <div class="grid" id="dirs">
-    <button class="btn" data-dir="j2s">진도 → 서울<small>강남 센트럴시티</small></button>
-    <button class="btn" data-dir="s2j">서울 → 진도<small>진도공용터미널</small></button>
+  <div id="dirs">
+    <div class="grp"><i class="ex">고속</i>서울 가는 버스 (금호고속)</div>
+    <div class="grid">
+      <button class="btn" data-dir="j2s">진도 → 서울<small>강남 센트럴시티</small></button>
+      <button class="btn" data-dir="s2j">서울 → 진도<small>진도공용터미널</small></button>
+    </div>
+    <div class="grp"><i class="lo">군내</i>진도 농어촌버스 (무료)</div>
+    <div class="grid">
+      <button class="btn lo" data-dir="e2m">읍 터미널 → 산월<small>쉬미/소포 노선</small></button>
+      <button class="btn lo" data-dir="m2e">산월 → 읍 터미널<small>십일시/소포 노선</small></button>
+    </div>
   </div>
 </section>
 
@@ -151,7 +171,7 @@ header.hero{background:linear-gradient(135deg,#991b1b 0%,#dc2626 60%,#ef4444 100
   <p class="nowline" id="nowLine"></p>
   <div id="next"></div>
   <p class="where" id="where"></p>
-  <figure>
+  <figure id="fig">
     <img id="photo" src="jindo-bus.jpg" alt="금호고속 우등 고속버스 (기아 그랜버드)">
     <figcaption>금호고속 우등 고속버스</figcaption>
   </figure>
@@ -159,12 +179,23 @@ header.hero{background:linear-gradient(135deg,#991b1b 0%,#dc2626 60%,#ef4444 100
 
 <section class="card">
   <h2 id="allTitle"></h2>
-  <table><thead><tr><th>출발</th><th>도착(예정)</th><th>등급</th></tr></thead><tbody id="allBody"></tbody></table>
+  <table><thead id="allHead"></thead><tbody id="allBody"></tbody></table>
   <p class="note" id="dur"></p>
 </section>
 
-<section class="card">
-  <h2>알아 두세요</h2>
+<section class="card localinfo" id="localInfo">
+  <h2>군내버스 알아 두세요</h2>
+  <dl>
+    <div><dt>요금</dt><dd><b>무료</b> (진도군 농어촌버스 무료 운행, 2024년 7월 1일부터)</dd></div>
+    <div><dt>읍에서 타는 곳</dt><dd>진도읍 공용터미널</dd></div>
+    <div><dt>산월에서</dt><dd>읍으로 가는 버스는 터미널 출발 뒤 약 30분에 산월에 와요. 몇 분 일찍 나가 계세요.</dd></div>
+    <div><dt>군내버스 문의</dt><dd><a href="tel:061-544-2062">061-544-2062</a></dd></div>
+  </dl>
+  <p class="caveat">진도군 농어촌버스 시간표(2025년 8월 기준)예요. 시각은 대략이고 길 사정에 따라 조금 빠르거나 늦을 수 있어요.</p>
+</section>
+
+<section class="card" id="exInfo">
+  <h2>고속버스 알아 두세요</h2>
   <dl>
     <div><dt>서울 타는 곳</dt><dd>센트럴시티터미널 호남선 (3·7·9호선 고속터미널역)</dd></div>
     <div><dt>진도 타는 곳</dt><dd>진도공용터미널 (진도읍 남문길 5)</dd></div>
@@ -173,33 +204,53 @@ header.hero{background:linear-gradient(135deg,#991b1b 0%,#dc2626 60%,#ef4444 100
   <p class="caveat">2026년 10월 기준 시간표예요. 명절·공휴일과 요금은 예매할 때 꼭 확인하세요.</p>
   <p class="note">출처: 진도→서울 진도군청 시외버스 시간표(jindo.go.kr, 2026-10-23 확인), 서울→진도 공공데이터 시간표(아사마루, 2026-10-02 수정, vocados·koreacharts와 같음).</p>
 </section>
-<footer>로돌이 만든 진도 버스 시간표</footer>
+<footer>로돌이 만든 진도 버스 시간표 · 시각은 한국 시간 기준이에요</footer>
 </div>
 <script>
+/*JB-START*/
 var DATA={
  j2s:[["08:20","13:20","프리미엄"],["10:10","15:10","우등"],["13:30","18:30","프리미엄"],["15:30","20:30","우등"]],
- s2j:[["06:00","10:40","프리미엄"],["08:10","12:50","우등"],["16:00","20:40","프리미엄"],["17:10","21:50","우등"]]
+ s2j:[["06:00","10:40","프리미엄"],["08:10","12:50","우등"],["16:00","20:40","프리미엄"],["17:10","21:50","우등"]],
+ /* 군내: [타는 시각, 터미널 출발, 경유(시간표판 표기)] */
+ e2m:[["06:40","06:40","안치 삼당 십일시 상미"],["08:40","08:40","쉬미 상미 왕무덤"],["10:20","10:20",""],["13:20","13:20",""],["16:30","16:30","고길"],["18:10","18:10","읍방향 앵무"]],
+ m2e:[["06:50","06:20","왕고개 돈지 상미"],["08:10","07:40","쉬미"],["10:00","09:30","고길"],["11:50","11:20","고길 안치"],["15:30","15:00","지도"],["17:40","17:10","안치"]]
 };
-var NAMES={j2s:"진도 → 서울(강남)",s2j:"서울(강남) → 진도"};
-var WHERE={j2s:"진도공용터미널에서 타요",s2j:"센트럴시티터미널 호남선에서 타요"};
-var DUR={j2s:"걸리는 시간 약 5시간 (도착은 예정 시각이에요)",s2j:"걸리는 시간 약 4시간 40분 (도착은 예정 시각이에요)"};
+var LOCAL={e2m:1,m2e:1};
+var NAMES={j2s:"진도 → 서울(강남)",s2j:"서울(강남) → 진도",e2m:"읍 터미널 → 산월",m2e:"산월 → 읍 터미널"};
+var WHERE={j2s:"진도공용터미널에서 타요",s2j:"센트럴시티터미널 호남선에서 타요",e2m:"진도읍 공용터미널에서 타요 · 요금 무료",m2e:"산월 정류장에서 타요 · 요금 무료"};
+var DUR={j2s:"걸리는 시간 약 5시간 (도착은 예정 시각이에요)",s2j:"걸리는 시간 약 4시간 40분 (도착은 예정 시각이에요)",
+ e2m:"진도군 농어촌버스(2025년 8월 기준) · 요금 무료 · 시각은 대략이에요",
+ m2e:"산월 타는 시각 = 터미널 출발 + 약 30분 · 시각은 대략이에요 · 요금 무료"};
+function toMin(t){return +t.slice(0,2)*60+ +t.slice(3);}
+function upcoming(d,min){return DATA[d].filter(function(x){return toMin(x[0])>=min;}).slice(0,3);}
+/*JB-END*/
 var $=function(id){return document.getElementById(id);};
 function kst(){var d=new Date(Date.now()+9*3600e3);var h=d.getUTCHours(),m=d.getUTCMinutes();return {min:h*60+m,label:(h<10?"0":"")+h+":"+(m<10?"0":"")+m};}
-function toMin(t){return +t.slice(0,2)*60+ +t.slice(3);}
 function left(x){var h=Math.floor(x/60),m=x%60;return x<1?"곧 출발":(h?h+"시간 ":"")+(m?m+"분":"")+" 뒤";}
+function sub(x){
+ if(dir==="e2m")return "터미널 출발"+(x[2]?" · 경유 "+x[2]:"");
+ if(dir==="m2e")return "터미널 출발 "+x[1]+" + 약 30분 · 시각은 대략";
+ return x[2]+" · 도착 "+x[1];
+}
 var dir="j2s";try{var s=localStorage.getItem("jb_dir");if(DATA[s])dir=s;}catch(e){}
 function render(){
- var n=kst(),b=DATA[dir];
+ var n=kst(),b=DATA[dir],lo=!!LOCAL[dir];
  $("nowChip").textContent="지금 "+n.label;
  document.querySelectorAll("#dirs .btn").forEach(function(x){x.classList.toggle("on",x.dataset.dir===dir);x.setAttribute("aria-pressed",x.dataset.dir===dir);});
- $("nextTitle").textContent="다음 버스 · "+NAMES[dir];
- $("nowLine").textContent="지금 "+n.label+" 기준";
- var up=b.filter(function(x){return toMin(x[0])>=n.min;}).slice(0,3);
- $("next").innerHTML=up.length?'<div class="next">'+up.map(function(x,i){return '<div class="nb'+(i?'':' first')+'"><div><div class="t">'+x[0]+'</div><div class="n">'+x[2]+' · 도착 '+x[1]+'</div></div><div class="l">'+left(toMin(x[0])-n.min)+'</div></div>';}).join("")+'</div>'
-  :'<div class="done"><b>오늘 버스는 끝났어요.</b>내일 첫차는 '+b[0][0]+' ('+b[0][2]+')예요.</div>';
+ $("nextTitle").innerHTML="다음 버스 · "+NAMES[dir]+(lo?'<span class="free">무료</span>':"");
+ $("nowLine").textContent="지금 "+n.label+" 기준"+(dir==="m2e"?" · 산월에서 타는 시각":"");
+ var up=upcoming(dir,n.min);
+ $("next").innerHTML=up.length?'<div class="next">'+up.map(function(x,i){return '<div class="nb'+(i?'':' first')+'"><div><div class="t">'+x[0]+'</div><div class="n">'+sub(x)+'</div></div><div class="l">'+left(toMin(x[0])-n.min)+'</div></div>';}).join("")+'</div>'
+  :'<div class="done"><b>오늘 버스는 끝났어요.</b>'+(lo?'내일 첫차: '+b[0][0]:'내일 첫차는 '+b[0][0]+' ('+b[0][2]+')예요.')+'</div>';
  $("where").textContent=WHERE[dir];
+ $("fig").hidden=lo;
+ $("localInfo").hidden=!lo;$("exInfo").hidden=lo;
  $("allTitle").textContent="하루 전체 시간표 ("+b.length+"회)";
- $("allBody").innerHTML=b.map(function(x){return '<tr'+(toMin(x[0])<n.min?' class="past"':'')+'><td class="h">'+x[0]+'</td><td>'+x[1]+'</td><td>'+x[2]+'</td></tr>';}).join("");
+ $("allHead").innerHTML=dir==="m2e"?'<tr><th>산월 승차</th><th>터미널 출발</th></tr>':dir==="e2m"?'<tr><th>터미널 출발</th><th>경유</th></tr>':'<tr><th>출발</th><th>도착(예정)</th><th>등급</th></tr>';
+ $("allBody").innerHTML=b.map(function(x){var c='<tr'+(toMin(x[0])<n.min?' class="past"':'')+'><td class="h">'+x[0]+'</td>';
+  if(dir==="m2e")return c+'<td>'+x[1]+'<small>+ 약 30분</small></td></tr>';
+  if(dir==="e2m")return c+'<td>'+(x[2]||"-")+'</td></tr>';
+  return c+'<td>'+x[1]+'</td><td>'+x[2]+'</td></tr>';}).join("");
  $("dur").textContent=DUR[dir];
 }
 $("dirs").addEventListener("click",function(e){var x=e.target.closest("[data-dir]");if(!x)return;dir=x.dataset.dir;try{localStorage.setItem("jb_dir",dir);}catch(_){}render();});
