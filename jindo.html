@@ -149,6 +149,19 @@ td small{display:block;font-size:14px;color:var(--sub)}
 a.btn.fe{display:block;text-align:center;text-decoration:none;background:#0e7490;border-color:#0e7490;color:#fff}
 a.btn.fe small{color:#fff;opacity:.85}
 @media (prefers-color-scheme: dark){.ferry h2{color:#67e8f9}}
+.hike{border:2px solid #7c5a2e;background:linear-gradient(rgba(124,90,46,.07),rgba(124,90,46,.07)),var(--card);padding:14px 16px}
+.hike>summary{color:#7c5a2e;min-height:40px}
+.hike>summary small{font-size:14px;font-weight:700;color:var(--sub);margin-left:6px}
+.course{border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:10px;background:var(--card)}
+.course h3{margin:0 0 8px;font-size:19px;font-weight:800;color:#7c5a2e}
+.course h4{margin:14px 0 6px;font-size:17px;font-weight:800}
+.course ol{margin:0;padding-left:22px;font-size:16px;line-height:1.6}
+.course .stops{font-size:15px;line-height:1.6}
+.course tr.pick td{background:var(--gold-soft);font-weight:800}
+.course .rec{border:2px solid #7c5a2e;border-radius:12px;padding:10px 12px;font-size:17px;font-weight:800;margin:6px 0 10px}
+.course .nx{font-size:16px;font-weight:700;margin:0 0 8px;font-variant-numeric:tabular-nums}
+.course figure img{height:auto;object-fit:contain}
+@media (prefers-color-scheme: dark){.hike>summary,.course h3{color:#e7b77a}.course .rec{border-color:#e7b77a}}
 </style>
 </head>
 <body>
@@ -178,6 +191,43 @@ a.btn.fe small{color:#fff;opacity:.85}
     </div>
   </div>
 </section>
+
+<details class="card hike" id="hike">
+  <summary><span>⛰ 산행 버스<small>동석산</small></span></summary>
+  <!-- 산행 코스 하나 = .course 카드 하나. 새 코스는 아래 카드를 복사해서 추가 -->
+  <div class="course" id="c-dongseok">
+    <h3>동석산 (하심동 → 세방낙조)</h3>
+    <div class="rec">추천: 09:25 세방 출발 → 심동 하차</div>
+    <p class="nx" id="hikeNext"></p>
+    <h4>계획</h4>
+    <ol>
+      <li>세방낙조휴게소(종점)에 차를 두기</li>
+      <li>세방에서 군내버스 탑승</li>
+      <li>심동(하심동) 정류장 하차 <small>(정류소 번호 3440116, 100-5번 등 농어촌버스)</small></li>
+      <li>하심동 동석산입구에서 산행 시작</li>
+      <li>동석산(219m) → 석적막산 삼각점(230.9m) → 가학재 → 작은애기봉(278m) → 큰애기봉(283m) → 세방낙조 전망대</li>
+      <li>세방낙조휴게소 도착 (차)</li>
+    </ol>
+    <h4>시간표 · 세방 / 마세</h4>
+    <table><thead><tr><th>읍 출발</th><th>세방 출발</th><th>경유 표기</th></tr></thead><tbody id="hikeBody">
+      <tr><td class="h">06:20</td><td class="h">06:50</td><td>앵무</td></tr>
+      <tr class="pick"><td class="h">08:30</td><td class="h">09:25</td><td>세방 마세 봉암</td></tr>
+      <tr><td class="h">10:30</td><td class="h">11:15</td><td>-</td></tr>
+      <tr><td class="h">13:00</td><td class="h">14:00</td><td>마세 금노</td></tr>
+      <tr><td class="h">16:00</td><td class="h">16:50</td><td>봉암</td></tr>
+      <tr><td class="h">18:20</td><td class="h">숙박</td><td>금노 마세</td></tr>
+    </tbody></table>
+    <p class="note">경유 표기는 터미널 시간표판에 적힌 그대로예요.</p>
+    <p class="caveat">심동 도착 시각은 시간표에 없어요. 심동은 세방에서 세 번째 정류장(가학·마세 다음)이에요.</p>
+    <h4>버스 노선 (세방–가학–읍)</h4>
+    <p class="stops"><b>세방 출발</b>: 세방 → 가학 → 마세 → <b>심동</b> → 봉암 → 가치 → 금노 → 와우 → 인지 → 십일시 → 매정 → 고산 → … → 읍</p>
+    <p class="stops"><b>읍 출발</b>: 읍 → 조금 → 포산 → 염장 → 장구포 → 선항 → 광전 → 삼막 → 용호 → 중매 → 고산 → 매정 → … → 세방</p>
+    <figure>
+      <img data-src="jindo-dongseoksan.jpg" alt="동석산 산행 지도 (하심동 동석산입구 → 세방낙조휴게소)" width="900" height="1111">
+      <figcaption>지도: 국제신문</figcaption>
+    </figure>
+  </div>
+</details>
 
 <section class="box blue">
   <div class="bar"></div>
@@ -298,6 +348,17 @@ $("dirs").addEventListener("click",function(e){var x=e.target.closest("[data-dir
 render();setInterval(render,20000);
 document.addEventListener("visibilitychange",function(){if(!document.hidden)render();});
 if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(function(){});
+/* 산행 버스: 접힌 상태에서는 지도를 안 불러옴 */
+(function(){
+ var d=$("hike");if(!d)return;
+ var SEBANG=["06:50","09:25","11:15","14:00","16:50"];
+ function hikeNext(){var n=kst(),t=SEBANG.filter(function(x){return toMin(x)>=n.min;})[0];
+  $("hikeNext").textContent=t?"다음 세방 출발 "+t+" · "+left(toMin(t)-n.min):"오늘 세방 출발 버스는 끝났어요 · 내일 첫차 "+SEBANG[0];}
+ function open(){if(!d.open)return;d.querySelectorAll("img[data-src]").forEach(function(i){i.src=i.dataset.src;i.removeAttribute("data-src");});hikeNext();}
+ d.addEventListener("toggle",open);
+ if(location.hash==="#hike")d.open=true;
+ open();setInterval(open,20000);
+})();
 </script>
 </body>
 </html>
