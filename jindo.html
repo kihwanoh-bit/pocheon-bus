@@ -161,6 +161,13 @@ a.btn.fe small{color:#fff;opacity:.85}
 .course .rec{border:2px solid #7c5a2e;border-radius:12px;padding:10px 12px;font-size:17px;font-weight:800;margin:6px 0 10px}
 .course .nx{font-size:16px;font-weight:700;margin:0 0 8px;font-variant-numeric:tabular-nums}
 .course figure img{height:auto;object-fit:contain}
+.hikenav{border:2px solid var(--blue);background:linear-gradient(var(--blue-soft),var(--blue-soft)),var(--card);border-radius:16px;padding:12px;margin-top:6px}
+.hikenav b{display:block;font-size:16px;color:var(--blue-ink);margin-bottom:8px}
+.hn{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hn .btn{min-height:60px;font-size:21px}
+.course{scroll-margin-top:12px}
+.hikenav{scroll-margin-top:12px}
+.totop{display:block;margin-top:12px;text-align:right;font-size:17px;font-weight:800;color:var(--blue-ink);text-decoration:none;padding:6px 0}
 @media (prefers-color-scheme: dark){.hike>summary,.course h3{color:#e7b77a}.course .rec{border-color:#e7b77a}}
 </style>
 </head>
@@ -194,8 +201,9 @@ a.btn.fe small{color:#fff;opacity:.85}
 
 <details class="card hike" id="hike">
   <summary><span>⛰ 산행 버스<small>동석산 · 지력산</small></span></summary>
-  <!-- 산행 코스 하나 = .course 카드 하나. 새 코스는 아래 카드를 복사해서 추가 -->
-  <div class="course" id="c-dongseok">
+  <!-- 산행 코스 하나 = .course 카드 하나(id="course-..." data-name="산 이름"). 새 코스는 카드를 복사해서 추가하면 산 목록 버튼이 자동으로 생김 -->
+  <div class="hikenav" id="hikeNav"><b>산 목록 · 누르면 그 산 버스로 가요</b><div class="hn" id="hikeNavBtns"></div></div>
+  <div class="course" id="course-dongseoksan" data-name="동석산">
     <h3>동석산 (하심동 → 세방낙조)</h3>
     <div class="rec">추천: 09:25 세방 출발 → 심동 하차</div>
     <p class="nx" id="hikeNext"></p>
@@ -227,7 +235,7 @@ a.btn.fe small{color:#fff;opacity:.85}
       <figcaption>지도: 국제신문</figcaption>
     </figure>
   </div>
-  <div class="course" id="c-jiryeok">
+  <div class="course" id="course-jiryeoksan" data-name="지력산">
     <h3>지력산 (하보전 → 지산)</h3>
     <p class="nx" id="jiryeokNext"></p>
     <h4>계획</h4>
@@ -379,7 +387,15 @@ if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(
   $("jiryeokNext").textContent=t?"다음 읍 출발 (산월행) "+t[1]+" · 인지 예상 "+inji(t[1])+" (인지까지 "+left(Math.max(0,toMin(t[1])+15-n.min))+")":"오늘 산월행 버스는 끝났어요 · 내일 첫차 읍 출발 "+DATA.e2m[0][1];}
  var _o=open;open=function(){_o();if(d.open)jiryeokNext();};
  d.addEventListener("toggle",open);
- if(location.hash==="#hike")d.open=true;
+ /* 산 목록 버튼: .course 카드에서 자동 생성 */
+ var cs=d.querySelectorAll(".course[id]"),nb=$("hikeNavBtns");
+ cs.forEach(function(c){var nm=c.dataset.name||c.querySelector("h3").textContent.split(" (")[0];
+  var b=document.createElement("button");b.className="btn";b.type="button";b.textContent="⛰ "+nm;
+  b.addEventListener("click",function(){c.scrollIntoView({behavior:"smooth",block:"start"});});nb.appendChild(b);
+  var t=document.createElement("a");t.className="totop";t.href="#hikeNav";t.textContent="↑ 산 목록";
+  t.addEventListener("click",function(e){e.preventDefault();$("hikeNav").scrollIntoView({behavior:"smooth",block:"start"});});c.appendChild(t);});
+ var hs=location.hash.slice(1);
+ if(hs==="hike"||/^course-/.test(hs)){d.open=true;if(hs!=="hike"&&$(hs))setTimeout(function(){$(hs).scrollIntoView();},50);}
  open();setInterval(open,20000);
 })();
 </script>
