@@ -193,7 +193,7 @@ a.btn.fe small{color:#fff;opacity:.85}
 </section>
 
 <details class="card hike" id="hike">
-  <summary><span>⛰ 산행 버스<small>동석산</small></span></summary>
+  <summary><span>⛰ 산행 버스<small>동석산 · 지력산</small></span></summary>
   <!-- 산행 코스 하나 = .course 카드 하나. 새 코스는 아래 카드를 복사해서 추가 -->
   <div class="course" id="c-dongseok">
     <h3>동석산 (하심동 → 세방낙조)</h3>
@@ -226,6 +226,22 @@ a.btn.fe small{color:#fff;opacity:.85}
       <img data-src="jindo-dongseoksan.jpg" alt="동석산 산행 지도 (하심동 동석산입구 → 세방낙조휴게소)" width="900" height="1111">
       <figcaption>지도: 국제신문</figcaption>
     </figure>
+  </div>
+  <div class="course" id="c-jiryeok">
+    <h3>지력산 (하보전 → 지산)</h3>
+    <p class="nx" id="jiryeokNext"></p>
+    <h4>계획</h4>
+    <ol>
+      <li>하산 지점인 세방 노선 '지산' 정류장(세방 출발 버스 16번째 정류장) 근처에 차를 두기</li>
+      <li>도로 맞은편 '인지' 정류소(읍→산월 군내버스 17번째 정류장)에서 산월행 군내버스 탑승</li>
+      <li>'하보전'(산월 노선 20번째 정류장) 하차</li>
+      <li>지력산 산행</li>
+      <li>지산 쪽으로 하산, 차로 복귀</li>
+    </ol>
+    <p class="note">지산과 인지는 이름은 다르지만 도로 맞은편 정류장이에요.</p>
+    <h4>시간표 · 읍 터미널 → 산월 (군내버스)</h4>
+    <table><thead><tr><th>읍 출발 시각</th><th>경유 표기</th></tr></thead><tbody id="jiryeokBody"></tbody></table>
+    <p class="caveat">인지·하보전 통과 시각은 시간표에 없어 읍 출발 기준이에요. 인지는 읍 출발 후 조금 뒤에 지나가요.</p>
   </div>
 </details>
 
@@ -355,6 +371,11 @@ if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(
  function hikeNext(){var n=kst(),t=SEBANG.filter(function(x){return toMin(x)>=n.min;})[0];
   $("hikeNext").textContent=t?"다음 세방 출발 "+t+" · "+left(toMin(t)-n.min):"오늘 세방 출발 버스는 끝났어요 · 내일 첫차 "+SEBANG[0];}
  function open(){if(!d.open)return;d.querySelectorAll("img[data-src]").forEach(function(i){i.src=i.dataset.src;i.removeAttribute("data-src");});hikeNext();}
+ /* 지력산: 위쪽 DATA.e2m(읍 터미널 → 산월)을 그대로 씀 */
+ $("jiryeokBody").innerHTML=DATA.e2m.map(function(x){return '<tr><td class="h">'+x[1]+'</td><td>'+(x[2]||"-")+'</td></tr>';}).join("");
+ function jiryeokNext(){var n=kst(),t=DATA.e2m.filter(function(x){return toMin(x[1])>=n.min;})[0];
+  $("jiryeokNext").textContent=t?"다음 읍 출발 (산월행) "+t[1]+" · "+left(toMin(t[1])-n.min):"오늘 산월행 버스는 끝났어요 · 내일 첫차 읍 출발 "+DATA.e2m[0][1];}
+ var _o=open;open=function(){_o();if(d.open)jiryeokNext();};
  d.addEventListener("toggle",open);
  if(location.hash==="#hike")d.open=true;
  open();setInterval(open,20000);
