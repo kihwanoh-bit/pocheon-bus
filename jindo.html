@@ -201,7 +201,7 @@ svg.mt{width:1.25em;height:1.05em;vertical-align:-.12em;margin-right:.3em;flex:n
 </section>
 
 <details class="card hike" id="hike">
-  <summary><span><svg class="mt" viewBox="0 0 24 20" aria-hidden="true"><path d="M1 19 9 5l4 6 3-4 7 12z" fill="#2e7d32"/><path d="M9 5 5.8 10.6l2-1.1 1.2 1.5 1.4-1.6 1.6.9z" fill="#fff"/></svg>산행 버스<small>동석산 · 지력산 · 여귀산 · 첨찰산</small></span></summary>
+  <summary><span><svg class="mt" viewBox="0 0 24 20" aria-hidden="true"><path d="M1 19 9 5l4 6 3-4 7 12z" fill="#2e7d32"/><path d="M9 5 5.8 10.6l2-1.1 1.2 1.5 1.4-1.6 1.6.9z" fill="#fff"/></svg>산행 버스<small>동석산 · 지력산 · 여귀산 · 첨찰산 · 금골산</small></span></summary>
   <!-- 산행 코스 하나 = .course 카드 하나(id="course-..." data-name="산 이름"). 새 코스는 카드를 복사해서 추가하면 산 목록 버튼이 자동으로 생김 -->
   <div class="hikenav" id="hikeNav"><b>산 목록 · 누르면 그 산 버스로 가요</b><div class="hn" id="hikeNavBtns"></div></div>
   <div class="course" id="course-dongseoksan" data-name="동석산">
@@ -311,6 +311,27 @@ svg.mt{width:1.25em;height:1.05em;vertical-align:-.12em;margin-right:.3em;flex:n
       <img data-src="jindo-cheomchalsan.jpg" alt="첨찰산 등산로 안내도 (쌍계사·주차장 원점회귀 1코스·2코스)" width="860" height="616">
       <figcaption>지도: 첨찰산 등산로 안내판 (진도군)</figcaption>
     </figure>
+  </div>
+  <div class="course" id="course-geumgolsan" data-name="금골산">
+    <h3>금골산 (193m, 미니금강산)</h3>
+    <p class="nx" id="geumgolNext"></p>
+    <h4>가는 법</h4>
+    <ol>
+      <li>읍 터미널에서 녹진행 군내버스 → '금골' 승강장 하차 (읍 출발 약 21분 뒤)</li>
+      <li>들머리: 금성초등학교 또는 해언사</li>
+    </ol>
+    <h4>시간표 · 녹진 / 신기 · 녹진 / 우수영</h4>
+    <table><thead><tr><th>읍 출발</th><th>금골 도착</th><th>노선</th><th>종점 출발</th><th>비고</th></tr></thead><tbody>
+      <tr><td>06:05</td><td class="h">06:26</td><td>녹진/신기</td><td>06:30</td><td></td></tr>
+      <tr><td>06:30</td><td class="h">06:51</td><td>녹진/우수영</td><td>07:00</td><td>우수영 장날(4·9일)</td></tr>
+      <tr><td>08:00</td><td class="h">08:21</td><td>녹진/신기</td><td>08:50</td><td>범바위</td></tr>
+      <tr><td>09:20</td><td class="h">09:41</td><td>녹진/우수영</td><td>09:50</td><td></td></tr>
+      <tr><td>10:40</td><td class="h">11:01</td><td>녹진/신기</td><td>11:30</td><td>범바위</td></tr>
+      <tr><td>13:00</td><td class="h">13:21</td><td>녹진/신기</td><td>13:50</td><td>범바위</td></tr>
+      <tr><td>15:50</td><td class="h">16:11</td><td>녹진/신기</td><td>16:40</td><td>범바위</td></tr>
+      <tr><td>18:20</td><td class="h">18:41</td><td>녹진/신기</td><td>숙박</td><td></td></tr>
+    </tbody></table>
+    <p class="note">종점 출발은 녹진·신기·우수영에서 읍으로 돌아오는 시각이에요.</p>
   </div>
 </details>
 
@@ -453,7 +474,10 @@ if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(
  var SACHEON=["07:40","10:30","13:20","16:30","17:50"];
  function cheomNext(){var n=kst(),t=SACHEON.filter(function(x){return toMin(x)>=n.min;})[0];
   $("cheomNext").textContent=t?"다음 읍 출발 (사천행) "+t+" · "+left(toMin(t)-n.min):"오늘 사천행 버스는 끝났어요 · 내일 첫차 읍 출발 "+SACHEON[0];}
- var _o=open;open=function(){_o();if(d.open){jiryeokNext();yeogwiNext();cheomNext();}};
+ var GEUMGOL=["06:05","06:30","08:00","09:20","10:40","13:00","15:50","18:20"];
+ function geumgolNext(){var n=kst(),t=GEUMGOL.filter(function(x){return toMin(x)+21>=n.min;})[0];
+  $("geumgolNext").textContent=t?"다음 금골 도착 "+hm(toMin(t)+21)+" (읍 "+t+" 출발) · "+left(Math.max(0,toMin(t)+21-n.min)):"오늘 녹진행 버스는 끝났어요 · 내일 첫차 읍 출발 "+GEUMGOL[0];}
+ var _o=open;open=function(){_o();if(d.open){jiryeokNext();yeogwiNext();cheomNext();geumgolNext();}};
  d.addEventListener("toggle",open);
  /* 산 목록 버튼: .course 카드에서 자동 생성 */
  var MT='<svg class="mt" viewBox="0 0 24 20" aria-hidden="true"><path d="M1 19 9 5l4 6 3-4 7 12z" fill="#2e7d32"/><path d="M9 5 5.8 10.6l2-1.1 1.2 1.5 1.4-1.6 1.6.9z" fill="#fff"/></svg>';
