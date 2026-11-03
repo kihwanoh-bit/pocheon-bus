@@ -1,8 +1,8 @@
 /* 포천 버스 시간표 service worker */
-var CACHE = "pocheon-bus-v14";
+var CACHE = "pocheon-bus-v15";
 var FILES = ["./", "index.html", "manifest.json", "siwoe.jpg", "bus3006.jpg",
   "icon-192.png", "icon-512.png", "icon-maskable-192.png", "icon-maskable-512.png", "apple-touch-icon.png",
-  "jindo-gunnae-bus.jpg", "jindo-ferry.jpg", "jindo-dongseoksan.jpg", "jindo-yeogwisan.jpg", "jindo-cheomchalsan.jpg", "jindo-jiryeoksan.jpg"];
+  "jindo-gunnae-bus.jpg", "jindo-ferry.jpg", "jindo-dongseoksan.jpg", "jindo-yeogwisan.jpg", "jindo-cheomchalsan.jpg", "jindo-jiryeoksan.jpg", "jindo-geumgolsan.jpg", "jindo-geumgolsan2.jpg"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(FILES); }).then(function () { return self.skipWaiting(); }));
