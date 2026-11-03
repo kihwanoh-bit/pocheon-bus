@@ -237,20 +237,24 @@ svg.mt{width:1.25em;height:1.05em;vertical-align:-.12em;margin-right:.3em;flex:n
     </figure>
   </div>
   <div class="course" id="course-jiryeoksan" data-name="지력산">
-    <h3>지력산 (하보전 → 지산)</h3>
+    <h3>지력산 (와우저수지 → 하보전)</h3>
     <p class="nx" id="jiryeokNext"></p>
     <h4>계획</h4>
     <ol>
-      <li>하산 지점인 세방 노선 '지산' 정류장 근처에 차를 두기</li>
-      <li>도로 맞은편 '인지' 정류소에서 산월행 군내버스 탑승</li>
-      <li>'하보전' 정류장 하차</li>
-      <li>지력산 산행</li>
-      <li>지산 쪽으로 하산, 차로 복귀</li>
+      <li>하산 지점인 하보전 산림생태관리센터 쪽에 차를 두기</li>
+      <li>'하보전' 정류장에서 산월 경유 군내버스 탑승 (읍 출발 +30분)</li>
+      <li>약 6분 뒤 '지산' 하차</li>
+      <li>와우저수지(와우삼거리)까지 약 2.5km 걷거나 택시</li>
+      <li>와우저수지 → 지력산 → 빼족산 → 해산봉 → 산림생태관리센터 정문, 차로 복귀</li>
     </ol>
-    <p class="note">지산과 인지는 이름은 다르지만 도로 맞은편 정류장이에요.</p>
+    <p class="note">지산면 콜택시 <a href="tel:0615426787">061-542-6787</a></p>
     <h4>시간표 · 읍 터미널 → 산월 (군내버스)</h4>
-    <table><thead><tr><th>읍 출발 시각</th><th>인지 도착(예상)</th><th>경유 표기</th></tr></thead><tbody id="jiryeokBody"></tbody></table>
-    <p class="caveat">인지 도착(예상)은 쌤 경험으로 읍 출발 후 약 15~20분을 더한 시각이에요. 공식 시간표에는 인지·하보전 통과 시각이 없으니 몇 분 일찍 나가 계세요.</p>
+    <table><thead><tr><th>읍 출발</th><th>하보전 탑승</th><th>지산 하차</th></tr></thead><tbody id="jiryeokBody"></tbody></table>
+    <p class="caveat">하보전은 읍 출발 후 약 30분, 지산은 약 36분이에요.</p>
+    <figure>
+      <img data-src="jindo-jiryeoksan.jpg" alt="지력산 산행 지도 (와우삼거리 출발 → 지력산 → 해산봉 → 산림생태관리센터 정문)" width="952" height="1292">
+      <figcaption>지도: 쌤 자료</figcaption>
+    </figure>
   </div>
   <div class="course" id="course-yeogwisan" data-name="여귀산">
     <h3>여귀산 (상만 → 탑립)</h3>
@@ -436,12 +440,11 @@ if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(
  function hikeNext(){var n=kst(),t=SEBANG.filter(function(x){return toMin(x)>=n.min;})[0];
   $("hikeNext").textContent=t?"다음 세방 출발 "+t+" · "+left(toMin(t)-n.min):"오늘 세방 출발 버스는 끝났어요 · 내일 첫차 "+SEBANG[0];}
  function open(){if(!d.open)return;d.querySelectorAll("img[data-src]").forEach(function(i){i.src=i.dataset.src;i.removeAttribute("data-src");});hikeNext();}
- /* 지력산: 위쪽 DATA.e2m(읍 터미널 → 산월)을 그대로 씀. 인지 도착 = 읍 출발 +15~20분 (쌤 예상) */
+ /* 지력산: DATA.e2m(읍 터미널 → 산월). 하보전 = 읍 출발 +30분, 지산 = +36분 */
  function hm(m){m=(m+1440)%1440;var h=Math.floor(m/60),i=m%60;return (h<10?"0":"")+h+":"+(i<10?"0":"")+i;}
- function inji(t){var m=toMin(t);return hm(m+15)+"~"+hm(m+20);}
- $("jiryeokBody").innerHTML=DATA.e2m.map(function(x){return '<tr><td class="h">'+x[1]+'</td><td>'+inji(x[1])+'</td><td>'+(x[2]||"-")+'</td></tr>';}).join("");
- function jiryeokNext(){var n=kst(),t=DATA.e2m.filter(function(x){return toMin(x[1])+15>=n.min;})[0];
-  $("jiryeokNext").textContent=t?"다음 읍 출발 (산월행) "+t[1]+" · 인지 예상 "+inji(t[1])+" (인지까지 "+left(Math.max(0,toMin(t[1])+15-n.min))+")":"오늘 산월행 버스는 끝났어요 · 내일 첫차 읍 출발 "+DATA.e2m[0][1];}
+ $("jiryeokBody").innerHTML=DATA.e2m.map(function(x){var m=toMin(x[1]);return '<tr><td>'+x[1]+'</td><td class="h">'+hm(m+30)+'</td><td>'+hm(m+36)+'</td></tr>';}).join("");
+ function jiryeokNext(){var n=kst(),t=DATA.e2m.filter(function(x){return toMin(x[1])+30>=n.min;})[0];
+  $("jiryeokNext").textContent=t?"다음 하보전 탑승 "+hm(toMin(t[1])+30)+" (읍 "+t[1]+" 출발) · "+left(toMin(t[1])+30-n.min):"오늘 산월행 버스는 끝났어요 · 내일 첫차 하보전 "+hm(toMin(DATA.e2m[0][1])+30);}
  /* 여귀산: 헌복동 출발(빨간 시간) 버스를 탑립에서 탐 */
  var HEONBOK=["07:20","09:40","12:50","17:15"];
  function yeogwiNext(){var n=kst(),t=HEONBOK.filter(function(x){return toMin(x)>=n.min;})[0];
