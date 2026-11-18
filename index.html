@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>포천 버스 시간표</title>
-<meta name="description" content="포천↔동서울 시외버스, 포천↔잠실 3006번 버스의 다음 출발 시각과 남은 시간을 바로 보여 드려요.">
+<meta name="description" content="포천↔동서울 시외버스, 포천↔잠실 3006번, 포천↔인천공항 7600번의 다음 출발 시각과 남은 시간을 바로 보여 드려요.">
 <meta name="theme-color" content="#1e3a8a">
 <meta name="color-scheme" content="light dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -136,13 +136,26 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:6px}
 .how .tag{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:999px;background:var(--blue);color:#fff;font-size:13px;vertical-align:middle}
 .how ol{margin:0;padding-left:24px;font-size:19px;line-height:1.6}
 .sheet .close{display:block;width:100%;appearance:none;border:0;cursor:pointer;font-family:inherit;margin-top:6px;padding:15px;border-radius:16px;font-size:20px;font-weight:800;color:#fff;background:linear-gradient(135deg,#1e3a8a,#2457d6)}
+
+.stops{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.stops .btn{min-height:40px;font-size:14px;padding:7px 10px;border-radius:999px;font-weight:700}
+.stoptable{width:100%;font-size:15px}
+.stoptable th,.stoptable td{text-align:center;padding:7px 4px;white-space:nowrap}
+.stoptable th.st,.stoptable td.st{text-align:left;font-weight:700;white-space:normal;min-width:92px}
+.stoptable tr.me td{background:var(--blue-soft);font-weight:800}
+.stoptable td.past{opacity:.45}
+#mapCard figure img{height:auto;object-fit:contain;background:transparent}
+#photo.bus7600{object-position:50% 32%}
+.srcplain{display:block;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.srcplain b{display:block;font-size:16px;color:var(--blue-ink)}
+.srcplain span{font-size:13px;color:var(--sub)}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="hero">
     <h1>🚌 포천 <span class="em">버스</span> 시간표</h1>
-    <p>가실 방향을 누르면 지금 시각 기준으로 다음 버스와 남은 시간이 바로 나와요.</p>
+    <p>동서울, 잠실, 인천공항 가는 다음 버스와 남은 시간이 바로 나와요.</p>
     <span class="now" id="nowChip">--</span>
   </header>
 
@@ -174,11 +187,14 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:6px}
       <button class="btn" data-dir="d2p">동서울→포천<small>시외버스</small></button>
       <button class="btn" data-dir="p2j">포천→잠실<small>3006번</small></button>
       <button class="btn" data-dir="j2p">잠실→포천<small>3006번</small></button>
+      <button class="btn" data-dir="p2a">포천→인천공항<small>7600번</small></button>
+      <button class="btn" data-dir="a2p">인천공항→포천<small>7600번</small></button>
     </div>
     <div class="days" id="days" hidden>
       <button class="btn" data-day="wk">평일·토요일</button>
       <button class="btn" data-day="hol">일요일·공휴일</button>
     </div>
+    <div class="stops" id="stops" hidden></div>
     <p class="hint" id="dayHint">시외버스는 평일 기준 시간표예요.</p>
   </section>
 
@@ -202,9 +218,17 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:6px}
   <section class="card">
     <details id="allBox">
       <summary id="allTitle">하루 전체 시간표</summary>
-      <table><thead><tr><th>시</th><th>출발 (분)</th></tr></thead><tbody id="allBody"></tbody></table>
+      <table id="allTable"><thead id="allHead"><tr><th>시</th><th>출발 (분)</th></tr></thead><tbody id="allBody"></tbody></table>
       <p class="note" id="viaNote" hidden>(경유) 표시 차는 의정부·송우리·대진대를 거쳐 가서 더 오래 걸려요.</p>
     </details>
+  </section>
+
+  <section class="card" id="mapCard" hidden>
+    <h2>7600번 노선도</h2>
+    <figure>
+      <img src="bus7600-map.jpg" alt="7600번 공항버스 노선도: 동송터미널에서 신철원, 영북면, 양문, 신북, 포천공영버스, 대진대, 송우리, 이마트, 만가대(민락)까지" width="900" height="1096">
+      <figcaption>동송터미널에서 만가대(민락)까지예요. 이 다음이 인천공항이에요. 쌤이 보내 주신 그림이에요.</figcaption>
+    </figure>
   </section>
 
   <section class="card">
@@ -215,7 +239,7 @@ footer{text-align:center;color:var(--sub);font-size:13px;margin-top:6px}
   <section class="card src">
     <h2>출처</h2>
     <div id="srcs"></div>
-    <p class="caveat">2026년 10월 23일에 확인한 시간이에요. 시간은 바뀔 수 있으니 명절과 공휴일에는 터미널에 꼭 확인하세요.</p>
+    <p class="caveat">시외버스와 3006번은 2026년 10월 23일, 7600번은 쌤이 보내 주신 정류소별 시간표(2026년 11월 18일)로 확인한 시간이에요. 시간은 바뀔 수 있으니 명절과 공휴일에는 터미널에 꼭 확인하세요. 일부 안내 앱은 포천→인천공항 T1 도착을 이 시간표보다 2분 늦게 표기하기도 해요.</p>
   </section>
 
   <footer>로돌이 만든 포천 버스 시간표 · 시각은 한국 시간 기준이에요</footer>
@@ -249,14 +273,97 @@ function kstNow(ms){
 }
 function autoDay(dow){ return dow === 0 ? "hol" : "wk"; }
 function is3006(dir){ return dir === "p2j" || dir === "j2p"; }
-function busesFor(dir, day){
+function is7600(dir){ return dir === "p2a" || dir === "a2p"; }
+
+/* 7600 정류소별 시각: 쌤이 보내 주신 시간표 사진(2026-11-18) */
+var B7600_STOPS_TO = [
+  {id:"dongsong", name:"동송터미널", short:"동송"},
+  {id:"sincheolwon", name:"신철원터미널", short:"신철원"},
+  {id:"yeongbuk", name:"영북면사무소", short:"영북면"},
+  {id:"yangmun", name:"양문1리터미널", short:"양문"},
+  {id:"sinbuk", name:"신북행정복지센터", short:"신북"},
+  {id:"pocheon", name:"포천공영버스", short:"포천공영"},
+  {id:"daejin", name:"선단1통·대진대학", short:"대진대"},
+  {id:"songuri", name:"송우리터미널", short:"송우리"},
+  {id:"songyang", name:"송양초", short:"송양초"},
+  {id:"emart", name:"이마트", short:"이마트"},
+  {id:"cheonggu", name:"청구아파트", short:"청구"},
+  {id:"mangadae", name:"만가대사거리", short:"만가대"},
+  {id:"t1", name:"인천공항T1", short:"공항T1"},
+  {id:"t2", name:"인천공항T2", short:"공항T2"}
+];
+var B7600_TO = {
+  dongsong:["04:30","07:30","12:30","16:00"],
+  sincheolwon:["04:50","07:50","12:50","16:20"],
+  yeongbuk:["05:00","08:00","13:00","16:30"],
+  yangmun:["05:10","08:10","13:10","16:40"],
+  sinbuk:["05:20","08:20","13:20","16:50"],
+  pocheon:["05:30","08:30","13:30","17:00"],
+  daejin:["05:40","08:40","13:40","17:10"],
+  songuri:["05:45","08:45","13:45","17:15"],
+  songyang:["06:00","09:00","14:00","17:30"],
+  emart:["06:05","09:05","14:05","17:35"],
+  cheonggu:["06:10","09:10","14:10","17:40"],
+  mangadae:["06:15","09:15","14:15","17:45"],
+  t1:["07:15","10:15","15:15","18:45"],
+  t2:["07:35","10:35","15:35","19:05"]
+};
+var B7600_STOPS_FROM = [
+  {id:"t2", name:"인천공항T2", short:"공항T2"},
+  {id:"t1", name:"인천공항T1", short:"공항T1"},
+  {id:"mangadae", name:"만가대사거리", short:"만가대"},
+  {id:"cheonggu", name:"청구아파트", short:"청구"},
+  {id:"emart", name:"이마트", short:"이마트"},
+  {id:"songyang", name:"송양초", short:"송양초"},
+  {id:"songuri", name:"송우리터미널", short:"송우리"},
+  {id:"daejin", name:"선단1통·대진대학", short:"대진대"},
+  {id:"pocheon", name:"포천공영버스", short:"포천공영"},
+  {id:"sinbuk", name:"신북행정복지센터", short:"신북"},
+  {id:"yangmun", name:"양문1리터미널", short:"양문"},
+  {id:"yeongbuk", name:"영북면사무소", short:"영북면"},
+  {id:"sincheolwon", name:"신철원터미널", short:"신철원"},
+  {id:"dongsong", name:"동송터미널", short:"동송"}
+];
+var B7600_FROM = {
+  t2:["08:40","11:40","16:40","20:20"],
+  t1:["09:00","12:00","17:00","20:40"],
+  mangadae:["10:00","13:00","18:00","21:40"],
+  cheonggu:["10:05","13:05","18:05","21:45"],
+  emart:["10:10","13:10","18:10","21:50"],
+  songyang:["10:25","13:25","18:25","22:05"],
+  songuri:["10:30","13:30","18:30","22:10"],
+  daejin:["10:40","13:40","18:40","22:20"],
+  pocheon:["10:50","13:50","18:50","22:30"],
+  sinbuk:["11:00","14:00","19:00","22:40"],
+  yangmun:["11:10","14:10","19:10","22:50"],
+  yeongbuk:["11:20","14:20","19:20","23:00"],
+  sincheolwon:["11:40","14:40","19:40","23:20"],
+  dongsong:["11:45","14:45","19:45","23:25"]
+};
+function b7600DefaultStop(dir){ return dir === "p2a" ? "pocheon" : "t2"; }
+function b7600Table(dir){ return dir === "p2a" ? B7600_TO : B7600_FROM; }
+function b7600Stops(dir){ return dir === "p2a" ? B7600_STOPS_TO : B7600_STOPS_FROM; }
+function b7600PickStops(dir){
+  return b7600Stops(dir).filter(function(s){ return dir !== "p2a" || (s.id !== "t1" && s.id !== "t2"); });
+}
+function b7600Note(dir, run){
+  if (dir === "p2a") return "T1 "+B7600_TO.t1[run]+" · T2 "+B7600_TO.t2[run]+" 도착";
+  return "포천공영 "+B7600_FROM.pocheon[run]+" · 동송 "+B7600_FROM.dongsong[run]+" 도착";
+}
+function busesFor(dir, day, stop){
   if (dir === "p2d") return list(P2D);
   if (dir === "d2p") return list(D2P, ["10:50","16:10"]);
   if (dir === "p2j") return list(day === "wk" ? P2J_WK : P2J_HOL);
-  return list(day === "wk" ? J2P_WK : J2P_HOL);
+  if (dir === "j2p") return list(day === "wk" ? J2P_WK : J2P_HOL);
+  if (is7600(dir)){
+    var tab = b7600Table(dir);
+    var sid = (stop && tab[stop]) ? stop : b7600DefaultStop(dir);
+    return tab[sid].map(function(t,i){ return {t:t, note:b7600Note(dir, i)}; });
+  }
+  return list(P2D);
 }
-function compute(dir, day, now){
-  var buses=busesFor(dir, day);
+function compute(dir, day, now, stop){
+  var buses=busesFor(dir, day, stop);
   var cur = now.min < 240 && is3006(dir) ? now.min + 1440 : now.min;
   var upcoming=buses.filter(function(b){ return toMin(b.t) >= cur; });
   var next3=upcoming.slice(0,3).map(function(b){ return {t:b.t, left:left(toMin(b.t)-cur), note:b.note}; });
@@ -267,7 +374,7 @@ function compute(dir, day, now){
     // after midnight (00:00-03:59) the next 3006 service day is the current calendar day
     var early = now.min < 240;
     var tdow = early ? now.dow : (now.dow+1)%7;
-    tomorrowFirst = is3006(dir) ? busesFor(dir, autoDay(tdow))[0].t : buses[0].t;
+    tomorrowFirst = is3006(dir) ? busesFor(dir, autoDay(tdow), stop)[0].t : buses[0].t;
     firstLabel = early ? "오늘 첫차는 " : "내일 첫차는 ";
   }
   return {buses:buses, cur:cur, next3:next3, rest:rest, tomorrowFirst:tomorrowFirst, firstLabel:firstLabel,
@@ -275,16 +382,32 @@ function compute(dir, day, now){
 }
 /*LOGIC-END*/
 
-var NAMES={p2d:"포천 → 동서울", d2p:"동서울 → 포천", p2j:"포천 → 잠실 (3006)", j2p:"잠실 → 포천 (3006)"};
+var NAMES={p2d:"포천 → 동서울", d2p:"동서울 → 포천", p2j:"포천 → 잠실 (3006)", j2p:"잠실 → 포천 (3006)",
+  p2a:"포천 → 인천공항 (7600)", a2p:"인천공항 → 포천 (7600)"};
 var WHERE={p2d:"포천시외버스터미널(포천공영버스터미널)에서 타요", d2p:"동서울종합터미널(2호선 강변역)에서 타요",
   p2j:"경복대 출발 시각이에요. 포천시청앞 정류장은 이보다 조금 뒤에 와요", j2p:"잠실광역환승센터 지하 21번 승강장에서 타요"};
+function whereText(dir, stop){
+  if (!is7600(dir)) return WHERE[dir];
+  var stops=b7600Stops(dir), s=null;
+  for (var i=0;i<stops.length;i++){ if (stops[i].id===stop){ s=stops[i]; break; } }
+  var name=s?s.name:(dir==="p2a"?"포천공영버스":"인천공항T2");
+  if (dir==="p2a"){
+    if (stop==="pocheon") return "포천공영버스(포천시외버스터미널, 포천 TR)에서 타요";
+    return name+"에서 타요";
+  }
+  if (stop==="t2") return "인천공항 제2여객터미널에서 타요. 제1여객터미널은 20분 뒤에 출발해요";
+  if (stop==="t1") return "인천공항 제1여객터미널에서 타요. 제2여객터미널보다 20분 늦어요";
+  return name+"에 도착(통과)하는 시각이에요";
+}
 var PHOTO={
   siwoe:{src:"siwoe.jpg", alt:"동서울터미널 17번 승강장의 경기고속 시외버스 (동서울↔포천)", cap:"동서울터미널의 경기고속 포천행 시외버스, 쌤이 직접 찍은 사진이에요."},
-  b3006:{src:"bus3006.jpg", alt:"잠실광역환승센터에 선 3006번 버스 (경복대학교↔잠실광역환승센터)", cap:"3006번 버스, 잠실광역환승센터에서 쌤이 직접 찍은 사진이에요."}
+  b3006:{src:"bus3006.jpg", alt:"잠실광역환승센터에 선 3006번 버스 (경복대학교↔잠실광역환승센터)", cap:"3006번 버스, 잠실광역환승센터에서 쌤이 직접 찍은 사진이에요."},
+  b7600:{src:"bus7600.jpg", alt:"7600번 공항버스 (포천 TR ↔ 인천공항, 경기고속 KD 공항버스)", cap:"7600번 공항버스(포천 TR ↔ 인천공항), 쌤이 보내 주신 사진이에요."}
 };
 var FACTS={
   b3006:[["노선","경복대·포천캠퍼스입구 ↔ 잠실광역환승센터 (포천시청앞, 대진대, 송우리터미널 경유)"],["걸리는 시간","포천에서 잠실까지 약 1시간~1시간 10분"],["요금","성인 교통카드 3,200원 (경기도 직행좌석, 2025년 10월 25일부터)"],["운행회사","포천교통"],["배차","평일 10~20분, 일요일·공휴일 15~20분 간격"]],
-  siwoe:[["타는 곳","포천시외버스터미널 ↔ 동서울종합터미널"],["요금","성인 5,400원 (일반)"],["운행회사","경기고속"],["포천터미널 전화","<a href=\"tel:031-540-6470\">031-540-6470</a>"],["예매","티머니GO, 버스타고 앱"]]
+  siwoe:[["타는 곳","포천시외버스터미널 ↔ 동서울종합터미널"],["요금","성인 5,400원 (일반)"],["운행회사","경기고속"],["포천터미널 전화","<a href=\"tel:031-540-6470\">031-540-6470</a>"],["예매","티머니GO, 버스타고 앱"]],
+  b7600:[["노선","동송터미널 ↔ 인천공항 T1·T2 (신철원, 영북면, 양문, 신북, 포천공영버스, 대진대, 송우리, 송양초, 이마트, 청구아파트, 만가대 경유)"],["요금","성인 17,300원 (우등)"],["걸리는 시간","포천공영버스 → T1 약 1시간 45분, T2 약 2시간 5분 / 공항 T2 → 포천공영버스 약 2시간 10분"],["운행","매일 하루 4회, 같은 시간표"],["운행회사","경기고속 (KD 공항버스)"],["포천터미널 전화","<a href=\"tel:031-540-6470\">031-540-6470</a>"]]
 };
 var SOURCES=[
   ["포천 → 동서울 시외버스 시간표","아사마루 (공공데이터포털 자료)","2026-10-21","https://transportation.asamaru.net/%EC%8B%9C%EC%99%B8%EB%B2%84%EC%8A%A4/%EC%8B%9C%EA%B0%84%ED%91%9C/%ED%8F%AC%EC%B2%9C%EC%8B%9C%EC%99%B8%EB%B2%84%EC%8A%A4%ED%84%B0%EB%AF%B8%EB%84%90/%EC%B6%9C%EB%B0%9C/%EB%8F%99%EC%84%9C%EC%9A%B8%EC%A2%85%ED%95%A9%ED%84%B0%EB%AF%B8%EB%84%90/%EB%8F%84%EC%B0%A9/"],
@@ -293,21 +416,56 @@ var SOURCES=[
   ["동서울 출발 송우리·대진대 행 시간","버스타임","2026-07-12","https://ko.bustime.co.kr/plans/intercity/dongseoul/songuri/details.html"],
   ["포천 버스 3006 시간표","나무위키","2026-09-25","https://namu.wiki/w/%ED%8F%AC%EC%B2%9C%20%EB%B2%84%EC%8A%A4%203006"],
   ["포천시 버스운행 시간표 안내 (광역버스 2026. 9. 1.)","포천시청","","https://pocheon.go.kr/www/selectBbsNttList.do?bbsNo=191&key=4012"],
-  ["경기 버스요금 인상 (직행좌석 3,200원)","동아일보","2025-10-22","https://www.donga.com/news/Economy/article/all/20251022/132611373/2"]
+  ["경기 버스요금 인상 (직행좌석 3,200원)","동아일보","2025-10-22","https://www.donga.com/news/Economy/article/all/20251022/132611373/2"],
+  ["7600번 정류소별 시간표","쌤이 보내 주신 사진","2026-11-18",""],
+  ["포천 → 인천공항2터미널 (교차 확인)","vocados","2026-11-18","https://vocados.github.io/%EC%8B%9C%EC%99%B8%EB%B2%84%EC%8A%A4/%ED%8F%AC%EC%B2%9C%20%EC%97%90%EC%84%9C%20%EC%9D%B8%EC%B2%9C%EA%B3%B5%ED%95%AD2%ED%84%B0%EB%AF%B8%EB%84%90%EA%B0%80%EB%8A%94%20%EC%8B%9C%EA%B0%84%ED%91%9C/"],
+  ["인천공항2터미널 → 포천 (교차 확인)","vocados","2026-11-16","https://vocados.github.io/%EC%8B%9C%EC%99%B8%EB%B2%84%EC%8A%A4/%EC%9D%B8%EC%B2%9C%EA%B3%B5%ED%95%AD2%ED%84%B0%EB%AF%B8%EB%84%90%20%EC%97%90%EC%84%9C%20%ED%8F%AC%EC%B2%9C%EA%B0%80%EB%8A%94%20%EC%8B%9C%EA%B0%84%ED%91%9C/"]
 ];
 
 var $=function(id){ return document.getElementById(id); };
 function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+function loadStop(dir){
+  try{
+    var v=localStorage.getItem("pb_stop_"+dir);
+    if (v && b7600Table(dir)[v]) return v;
+  }catch(e){}
+  return b7600DefaultStop(dir);
+}
 var saved=null; try{ saved=localStorage.getItem("pb_dir"); }catch(e){}
-var state={dir: NAMES[saved] ? saved : "p2d", day: autoDay(kstNow().dow), dayManual:false, lastDow: kstNow().dow};
+var state={dir: NAMES[saved] ? saved : "p2d", day: autoDay(kstNow().dow), dayManual:false, lastDow: kstNow().dow, stop:"pocheon"};
+if (is7600(state.dir)) state.stop=loadStop(state.dir);
+try{
+  var q=new URLSearchParams(location.search).get("dir");
+  if(q && NAMES[q]){ state.dir=q; if(is7600(q)) state.stop=loadStop(q); }
+  var qs=new URLSearchParams(location.search).get("stop");
+  if(qs && is7600(state.dir) && b7600Table(state.dir)[qs]) state.stop=qs;
+}catch(e){}
 
+function renderStops(dir, stop){
+  $("stops").innerHTML=b7600PickStops(dir).map(function(s){
+    var on=s.id===stop;
+    return '<button class="btn'+(on?' on':'')+'" type="button" data-stop="'+s.id+'" aria-pressed="'+on+'">'+s.short+'</button>';
+  }).join("");
+}
 function render(){
   var now=kstNow();
   if (now.dow !== state.lastDow){ state.lastDow=now.dow; if (!state.dayManual) state.day=autoDay(now.dow); }
-  var dir=state.dir, three=is3006(dir), r=compute(dir, state.day, now);
+  var dir=state.dir, three=is3006(dir), air=is7600(dir), r=compute(dir, state.day, now, state.stop);
   $("nowChip").textContent="지금 "+now.label;
   document.querySelectorAll("#dirs .btn").forEach(function(b){ b.classList.toggle("on", b.dataset.dir===dir); b.setAttribute("aria-pressed", b.dataset.dir===dir); });
-  $("days").hidden=!three; $("dayHint").hidden=three;
+  $("days").hidden=!three;
+  $("stops").hidden=!air;
+  if (air){
+    $("dayHint").hidden=false;
+    $("dayHint").textContent="7600번은 매일 같은 시간표예요. 타는 정류소를 누르면 그 시각으로 보여 드려요.";
+    renderStops(dir, state.stop);
+  } else if (three){
+    $("dayHint").hidden=true;
+    $("dayHint").textContent="시외버스는 평일 기준 시간표예요.";
+  } else {
+    $("dayHint").hidden=false;
+    $("dayHint").textContent="시외버스는 평일 기준 시간표예요.";
+  }
   document.querySelectorAll("#days .btn").forEach(function(b){ b.classList.toggle("on", b.dataset.day===state.day); b.setAttribute("aria-pressed", b.dataset.day===state.day); });
   $("nextTitle").textContent="다음 버스 · "+NAMES[dir];
   $("nowLine").textContent="지금 "+now.label+" 기준";
@@ -318,29 +476,51 @@ function render(){
   } else {
     $("next").innerHTML='<div class="done"><b>오늘 버스는 끝났어요.</b>'+r.firstLabel+r.tomorrowFirst+'예요.</div>';
   }
-  $("where").textContent=WHERE[dir];
-  var p=three?PHOTO.b3006:PHOTO.siwoe;
+  $("where").textContent=whereText(dir, state.stop);
+  var p=air?PHOTO.b7600:(three?PHOTO.b3006:PHOTO.siwoe);
   if ($("photo").getAttribute("src")!==p.src) $("photo").setAttribute("src",p.src);
   $("photo").alt=p.alt; $("cap").textContent=p.cap;
+  $("photo").classList.toggle("bus7600", air);
+  $("mapCard").hidden=!air;
 
   $("restCard").hidden = r.rest.length === 0;
   $("restHead").innerHTML='<tr><th>출발</th><th>남은 시간</th>'+(r.hasNotes?'<th>비고</th>':'')+'</tr>';
   $("restBody").innerHTML=r.rest.map(function(b){ return '<tr><td>'+b.t+'</td><td>'+b.left+'</td>'+(r.hasNotes?'<td>'+esc(b.note||"")+'</td>':'')+'</tr>'; }).join("");
 
-  var hours=[], by={};
-  r.buses.forEach(function(b){ var h=b.t.slice(0,2); if(!by[h]){ by[h]=[]; hours.push(h); } by[h].push({m:b.t.slice(3)+(b.note?" (경유)":""), past: toMin(b.t) < r.cur}); });
-  $("allTitle").textContent="하루 전체 시간표 ("+r.buses.length+"회)";
-  $("allBody").innerHTML=hours.map(function(h){
-    var allPast=by[h].every(function(x){return x.past;});
-    return '<tr'+(allPast?' class="past"':'')+'><td class="h">'+h+'시</td><td class="ms">'+by[h].map(function(x){return x.m;}).join("  ")+'</td></tr>';
-  }).join("");
-  $("viaNote").hidden=!r.hasNotes;
-  $("facts").innerHTML=(three?FACTS.b3006:FACTS.siwoe).map(function(f){ return '<div><dt>'+f[0]+'</dt><dd>'+f[1]+'</dd></div>'; }).join("");
+  if (air){
+    var stops=b7600Stops(dir), tab=b7600Table(dir);
+    $("allTitle").textContent="정류소별 시간표 (하루 4회)";
+    $("allTable").className="stoptable";
+    $("allHead").innerHTML='<tr><th class="st">정류소</th><th>1회</th><th>2회</th><th>3회</th><th>4회</th></tr>';
+    $("allBody").innerHTML=stops.map(function(s){
+      return '<tr'+(s.id===state.stop?' class="me"':'')+'><td class="st">'+esc(s.name)+'</td>'+
+        tab[s.id].map(function(t){ return '<td'+(toMin(t)<r.cur?' class="past"':'')+'>'+t+'</td>'; }).join("")+'</tr>';
+    }).join("");
+    $("viaNote").hidden=false;
+    $("viaNote").textContent="쌤이 보내 주신 정류소별 시간표예요. 선택한 정류소는 색이 다르게 표시돼요.";
+  } else {
+    var hours=[], by={};
+    r.buses.forEach(function(b){ var h=b.t.slice(0,2); if(!by[h]){ by[h]=[]; hours.push(h); } by[h].push({m:b.t.slice(3)+(b.note?" (경유)":""), past: toMin(b.t) < r.cur}); });
+    $("allTitle").textContent="하루 전체 시간표 ("+r.buses.length+"회)";
+    $("allTable").className="";
+    $("allHead").innerHTML='<tr><th>시</th><th>출발 (분)</th></tr>';
+    $("allBody").innerHTML=hours.map(function(h){
+      var allPast=by[h].every(function(x){return x.past;});
+      return '<tr'+(allPast?' class="past"':'')+'><td class="h">'+h+'시</td><td class="ms">'+by[h].map(function(x){return x.m;}).join("  ")+'</td></tr>';
+    }).join("");
+    $("viaNote").hidden=!r.hasNotes;
+    $("viaNote").textContent="(경유) 표시 차는 의정부·송우리·대진대를 거쳐 가서 더 오래 걸려요.";
+  }
+  $("facts").innerHTML=(air?FACTS.b7600:(three?FACTS.b3006:FACTS.siwoe)).map(function(f){ return '<div><dt>'+f[0]+'</dt><dd>'+f[1]+'</dd></div>'; }).join("");
 }
 
-$("dirs").addEventListener("click",function(e){ var b=e.target.closest("[data-dir]"); if(!b) return; state.dir=b.dataset.dir; try{localStorage.setItem("pb_dir",state.dir);}catch(_){} render(); });
+$("dirs").addEventListener("click",function(e){ var b=e.target.closest("[data-dir]"); if(!b) return; state.dir=b.dataset.dir; if (is7600(state.dir)) state.stop=loadStop(state.dir); try{localStorage.setItem("pb_dir",state.dir);}catch(_){} render(); });
 $("days").addEventListener("click",function(e){ var b=e.target.closest("[data-day]"); if(!b) return; state.day=b.dataset.day; state.dayManual=true; render(); });
-$("srcs").innerHTML=SOURCES.map(function(s){ return '<a href="'+s[3]+'" target="_blank" rel="noopener"><b>'+esc(s[0])+'</b><span>'+esc(s[1])+(s[2]?' · '+s[2]:'')+'</span></a>'; }).join("");
+$("stops").addEventListener("click",function(e){ var b=e.target.closest("[data-stop]"); if(!b) return; state.stop=b.dataset.stop; try{localStorage.setItem("pb_stop_"+state.dir,state.stop);}catch(_){} render(); });
+$("srcs").innerHTML=SOURCES.map(function(s){
+  var body='<b>'+esc(s[0])+'</b><span>'+esc(s[1])+(s[2]?' · '+s[2]:'')+'</span>';
+  return s[3] ? '<a href="'+s[3]+'" target="_blank" rel="noopener">'+body+'</a>' : '<div class="srcplain">'+body+'</div>';
+}).join("");
 render();
 setInterval(render, 20000);
 document.addEventListener("visibilitychange",function(){ if(!document.hidden) render(); });

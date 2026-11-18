@@ -1,6 +1,6 @@
 /* 포천 버스 시간표 service worker */
-var CACHE = "pocheon-bus-v16";
-var FILES = ["./", "index.html", "manifest.json", "siwoe.jpg", "bus3006.jpg",
+var CACHE = "pocheon-bus-v17";
+var FILES = ["./", "index.html", "manifest.json", "siwoe.jpg", "bus3006.jpg", "bus7600.jpg", "bus7600-map.jpg",
   "icon-192.png", "icon-512.png", "icon-maskable-192.png", "icon-maskable-512.png", "apple-touch-icon.png",
   "jindo-gunnae-bus.jpg", "jindo-ferry.jpg", "jindo-dongseoksan.jpg", "jindo-yeogwisan.jpg", "jindo-cheomchalsan.jpg", "jindo-jiryeoksan.jpg", "jindo-geumgolsan.jpg", "jindo-geumgolsan2.jpg", "jindo-mountains.jpg"];
 
